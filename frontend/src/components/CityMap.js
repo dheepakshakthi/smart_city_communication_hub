@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import styled from 'styled-components';
 import { createCustomDeviceIcon, createEdgeNodeIcon, createAlertIcon } from './DeviceIcons';
+import { MAPBOX_CONFIG } from '../config/mapbox';
 
 // Enhanced legend with device-specific information
 const deviceTypeInfo = {
@@ -206,9 +207,9 @@ function MapUpdater({ devices, edgeNodes, alerts, onDeviceClick }) {
 function CityMap({ devices = [], edgeNodes = [], emergencyAlerts = [], onDeviceClick }) {
   const mapRef = useRef();
 
-  // Default center (NYC downtown area)
-  const defaultCenter = [40.7539, -73.9791];
-  const defaultZoom = 14;
+  // Chennai city center coordinates
+  const defaultCenter = [13.0827, 80.2707]; // Chennai, Tamil Nadu, India
+  const defaultZoom = 13;
 
   useEffect(() => {
     // Make device click handler globally available for popup buttons

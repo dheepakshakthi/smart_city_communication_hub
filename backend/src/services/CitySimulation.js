@@ -159,12 +159,12 @@ class CitySimulation {
     }
 
     setupCity() {
-        // Define city grid coordinates (simulating a 5x5 km area in downtown)
+        // Define Chennai city grid coordinates (covering major areas)
         const cityBounds = {
-            north: 40.7589,  // North boundary
-            south: 40.7489,  // South boundary  
-            east: -73.9741,  // East boundary
-            west: -73.9841   // West boundary
+            north: 13.1200,  // Anna Nagar area
+            south: 13.0400,  // Adyar area  
+            east: 80.3200,   // ECR side
+            west: 80.2200    // T. Nagar area
         };
 
         // Create edge computing nodes (strategically placed)
@@ -181,11 +181,11 @@ class CitySimulation {
 
     createEdgeNodes(bounds) {
         const edgeNodeLocations = [
-            { lat: 40.7559, lon: -73.9781, name: "Downtown Hub" },
-            { lat: 40.7519, lon: -73.9801, name: "Business District" },
-            { lat: 40.7579, lon: -73.9761, name: "Residential North" },
-            { lat: 40.7509, lon: -73.9781, name: "Industrial South" },
-            { lat: 40.7539, lon: -73.9821, name: "Transport Junction" }
+            { lat: 13.0827, lon: 80.2707, name: "Central Chennai" },
+            { lat: 13.0418, lon: 80.2341, name: "T. Nagar Hub" },
+            { lat: 13.1067, lon: 80.2206, name: "Anna Nagar" },
+            { lat: 13.0067, lon: 80.2576, name: "Adyar IT Hub" },
+            { lat: 13.0499, lon: 80.2834, name: "Marina Beach" }
         ];
 
         edgeNodeLocations.forEach((location, index) => {
@@ -223,6 +223,12 @@ class CitySimulation {
             for (let i = 0; i < config.count; i++) {
                 const location = this.generateRandomLocation(bounds);
                 const deviceId = `${config.prefix}_${i + 1}`;
+                
+                // Debug: Log first few device locations
+                if (this.devices.length < 3) {
+                    console.log(`Creating device ${deviceId} at location:`, location);
+                }
+                
                 // Choose random network type
                 const networkTypes = ['5G', 'Wi-Fi 6', 'LPWAN'];
                 const networkType = networkTypes[Math.floor(Math.random() * networkTypes.length)];
