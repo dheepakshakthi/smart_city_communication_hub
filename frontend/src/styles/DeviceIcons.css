@@ -1,0 +1,99 @@
+/* Custom Device Icon Styles */
+.custom-device-icon {
+  border: none !important;
+  background: transparent !important;
+}
+
+.custom-device-icon:hover {
+  transform: scale(1.1);
+  transition: transform 0.2s ease-in-out;
+}
+
+.edge-node-icon {
+  border: none !important;
+  background: transparent !important;
+}
+
+.edge-node-icon:hover {
+  transform: scale(1.05);
+  transition: transform 0.2s ease-in-out;
+}
+
+.alert-icon {
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Pulse animations for alerts */
+.alert-pulse-high {
+  animation: alertPulseHigh 1.5s infinite;
+}
+
+.alert-pulse-medium {
+  animation: alertPulseMedium 2s infinite;
+}
+
+.alert-pulse-low {
+  animation: alertPulseLow 2.5s infinite;
+}
+
+@keyframes alertPulseHigh {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.2); opacity: 0.7; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes alertPulseMedium {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.15); opacity: 0.75; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes alertPulseLow {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.1); opacity: 0.8; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Device status indicators */
+.device-status-online {
+  color: #4CAF50;
+  font-weight: 600;
+}
+
+.device-status-offline {
+  color: #F44336;
+  font-weight: 600;
+}
+
+.device-status-low_battery {
+  color: #FF9800;
+  font-weight: 600;
+}
+
+/* Enhanced popup styles */
+.leaflet-popup-content-wrapper {
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.leaflet-popup-content {
+  margin: 12px 16px;
+  line-height: 1.4;
+}
+
+.leaflet-popup-tip {
+  background: rgba(255, 255, 255, 0.98);
+}
+
+/* Device type specific colors for better visibility */
+.device-cctv { color: #4CAF50; }
+.device-traffic { color: #2196F3; }
+.device-waste { color: #9C27B0; }
+.device-light { color: #FFC107; }
+.device-pollution { color: #795548; }
+.device-water { color: #00BCD4; }
+.device-noise { color: #E91E63; }
+.device-parking { color: #3F51B5; }

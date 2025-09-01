@@ -8,6 +8,141 @@ const {
 const EdgeNode = require('../models/EdgeNode');
 const SecurityService = require('./SecurityService');
 
+// Additional device types for enhanced simulation
+class WaterQualitySensor {
+    constructor(id, location, networkType, edgeNode) {
+        this.id = id;
+        this.type = 'WaterQualitySensor';
+        this.location = location;
+        this.networkType = networkType || 'LPWAN';
+        this.edgeNode = edgeNode;
+        this.status = 'online';
+        this.batteryLevel = Math.floor(Math.random() * 100) + 1;
+        this.lastDataUpdate = Date.now();
+        this.energyDraw = 8; // watts per hour
+    }
+
+    generateData() {
+        return {
+            deviceId: this.id,
+            timestamp: Date.now(),
+            location: this.location,
+            waterQuality: {
+                ph: (Math.random() * 4 + 6).toFixed(2), // pH 6-10
+                turbidity: (Math.random() * 10).toFixed(2), // NTU
+                dissolvedOxygen: (Math.random() * 15).toFixed(2), // mg/L
+                temperature: (Math.random() * 20 + 5).toFixed(1) // °C
+            }
+        };
+    }
+
+    updateBattery() {
+        // Simulate battery drain based on network type
+        const drainRates = { '5G': 0.5, 'WiFi6': 0.3, 'LPWAN': 0.1 };
+        this.batteryLevel = Math.max(0, this.batteryLevel - (drainRates[this.networkType] || 0.2));
+        
+        if (this.batteryLevel < 10) {
+            this.status = 'low_battery';
+        } else if (this.batteryLevel === 0) {
+            this.status = 'offline';
+        }
+    }
+
+    processData() {
+        if (this.status === 'offline') return null;
+        return this.generateData();
+    }
+}
+
+class NoiseSensor {
+    constructor(id, location, networkType, edgeNode) {
+        this.id = id;
+        this.type = 'NoiseSensor';
+        this.location = location;
+        this.networkType = networkType || 'WiFi6';
+        this.edgeNode = edgeNode;
+        this.status = 'online';
+        this.batteryLevel = Math.floor(Math.random() * 100) + 1;
+        this.lastDataUpdate = Date.now();
+        this.energyDraw = 12; // watts per hour
+    }
+
+    generateData() {
+        return {
+            deviceId: this.id,
+            timestamp: Date.now(),
+            location: this.location,
+            noiseLevel: {
+                decibels: (Math.random() * 60 + 30).toFixed(1), // 30-90 dB
+                frequency: Math.floor(Math.random() * 8000 + 20), // Hz
+                duration: Math.floor(Math.random() * 300 + 1) // seconds
+            }
+        };
+    }
+
+    updateBattery() {
+        // Simulate battery drain based on network type
+        const drainRates = { '5G': 0.5, 'WiFi6': 0.3, 'LPWAN': 0.1 };
+        this.batteryLevel = Math.max(0, this.batteryLevel - (drainRates[this.networkType] || 0.2));
+        
+        if (this.batteryLevel < 10) {
+            this.status = 'low_battery';
+        } else if (this.batteryLevel === 0) {
+            this.status = 'offline';
+        }
+    }
+
+    processData() {
+        if (this.status === 'offline') return null;
+        return this.generateData();
+    }
+}
+
+class ParkingSensor {
+    constructor(id, location, networkType, edgeNode) {
+        this.id = id;
+        this.type = 'ParkingSensor';
+        this.location = location;
+        this.networkType = networkType || 'LPWAN';
+        this.edgeNode = edgeNode;
+        this.status = 'online';
+        this.batteryLevel = Math.floor(Math.random() * 100) + 1;
+        this.lastDataUpdate = Date.now();
+        this.energyDraw = 5; // watts per hour
+    }
+
+    generateData() {
+        return {
+            deviceId: this.id,
+            timestamp: Date.now(),
+            location: this.location,
+            parkingStatus: {
+                occupied: Math.random() > 0.6, // 40% chance occupied
+                vehicleType: ['car', 'motorcycle', 'truck'][Math.floor(Math.random() * 3)],
+                duration: Math.floor(Math.random() * 240), // minutes
+                paymentStatus: ['paid', 'unpaid', 'expired'][Math.floor(Math.random() * 3)]
+            }
+        };
+    }
+
+    updateBattery() {
+        // Simulate battery drain based on network type
+        const drainRates = { '5G': 0.5, 'WiFi6': 0.3, 'LPWAN': 0.1 };
+        this.batteryLevel = Math.max(0, this.batteryLevel - (drainRates[this.networkType] || 0.2));
+        
+        if (this.batteryLevel < 10) {
+            this.status = 'low_battery';
+        } else if (this.batteryLevel === 0) {
+            this.status = 'offline';
+        }
+    }
+
+    processData() {
+        if (this.status === 'offline') return null;
+        return this.generateData();
+    }
+}
+
 class CitySimulation {
     constructor() {
         this.devices = [];
@@ -66,23 +201,33 @@ class CitySimulation {
 
     createSmartDevices(bounds) {
         const deviceConfigs = [
-            // CCTV Cameras (20 units)
-            { type: CCTV, count: 20, prefix: 'cctv_cam' },
-            // Traffic Sensors (15 units)
-            { type: TrafficSensor, count: 15, prefix: 'traffic_sensor' },
-            // Waste Bin Sensors (25 units)
-            { type: WasteBinSensor, count: 25, prefix: 'waste_bin' },
-            // Smart Streetlights (30 units - also serve as 5G small cells)
-            { type: SmartStreetlight, count: 30, prefix: 'smart_light' },
-            // Pollution Sensors (12 units)
-            { type: PollutionSensor, count: 12, prefix: 'pollution_sensor' }
+            // CCTV Cameras (18 units)
+            { type: CCTV, count: 18, prefix: 'cctv_cam' },
+            // Traffic Sensors (14 units)
+            { type: TrafficSensor, count: 14, prefix: 'traffic_sensor' },
+            // Waste Bin Sensors (22 units)
+            { type: WasteBinSensor, count: 22, prefix: 'waste_bin' },
+            // Smart Streetlights (26 units)
+            { type: SmartStreetlight, count: 26, prefix: 'smart_light' },
+            // Pollution Sensors (10 units)
+            { type: PollutionSensor, count: 10, prefix: 'pollution_sensor' },
+            // Water Quality Sensors (8 units)
+            { type: WaterQualitySensor, count: 8, prefix: 'water_quality' },
+            // Noise Sensors (12 units)
+            { type: NoiseSensor, count: 12, prefix: 'noise_sensor' },
+            // Parking Sensors (16 units)
+            { type: ParkingSensor, count: 16, prefix: 'parking_sensor' }
         ];
 
         deviceConfigs.forEach(config => {
             for (let i = 0; i < config.count; i++) {
                 const location = this.generateRandomLocation(bounds);
                 const deviceId = `${config.prefix}_${i + 1}`;
-                const device = new config.type(deviceId, location);
+                // Choose random network type
+                const networkTypes = ['5G', 'Wi-Fi 6', 'LPWAN'];
+                const networkType = networkTypes[Math.floor(Math.random() * networkTypes.length)];
+                
+                const device = new config.type(deviceId, location, networkType);
                 this.devices.push(device);
             }
         });

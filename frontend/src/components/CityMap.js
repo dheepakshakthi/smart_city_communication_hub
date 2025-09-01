@@ -1,7 +1,20 @@
 import React, { useEffect, useRef } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import { MapContainer, TileLayer, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import styled from 'styled-components';
+import { createCustomDeviceIcon, createEdgeNodeIcon, createAlertIcon } from './DeviceIcons';
+
+// Enhanced legend with device-specific information
+const deviceTypeInfo = {
+  CCTV: { color: '#2C3E50', icon: '📹', name: 'Security Cameras' },
+  TrafficSensor: { color: '#34495E', icon: '🚦', name: 'Traffic Controllers' },
+  WasteBinSensor: { color: '#8E44AD', icon: '🗑️', name: 'Waste Monitors' },
+  SmartStreetlight: { color: '#F39C12', icon: '💡', name: 'Smart Lighting' },
+  PollutionSensor: { color: '#95A5A6', icon: '🌡️', name: 'Air Quality' },
+  WaterQualitySensor: { color: '#3498DB', icon: '💧', name: 'Water Sensors' },
+  NoiseSensor: { color: '#E91E63', icon: '🔊', name: 'Sound Monitors' },
+  ParkingSensor: { color: '#3F51B5', icon: '🅿️', name: 'Parking Spaces' },
+};
 
 // Fix for default markers in React Leaflet
 delete L.Icon.Default.prototype._getIconUrl;
@@ -76,100 +89,6 @@ const LegendItem = styled.div`
   }
 `;
 
-// Custom icons for different device types
-const createCustomIcon = (type, status = 'online') => {
-  const colors = {
-    CCTV: status === 'online' ? '#4CAF50' : status === 'low_battery' ? '#FF9800' : '#F44336',
-    TrafficSensor: status === 'online' ? '#2196F3' : status === 'low_battery' ? '#FF9800' : '#F44336',
-    WasteBinSensor: status === 'online' ? '#9C27B0' : status === 'low_battery' ? '#FF9800' : '#F44336',
-    SmartStreetlight: status === 'online' ? '#FFC107' : status === 'low_battery' ? '#FF9800' : '#F44336',
-    PollutionSensor: status === 'online' ? '#795548' : status === 'low_battery' ? '#FF9800' : '#F44336',
-  };
-
-  const icons = {
-    CCTV: '📹',
-    TrafficSensor: '🚦',
-    WasteBinSensor: '🗑️',
-    SmartStreetlight: '💡',
-    PollutionSensor: '🌡️',
-  };
-
-  return L.divIcon({
-    html: `<div style="
-      background: ${colors[type] || '#666'};
-      width: 20px;
-      height: 20px;
-      border-radius: 50%;
-      border: 2px solid white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-    ">${icons[type] || '📍'}</div>`,
-    className: 'custom-div-icon',
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-  });
-};
-
-const createEdgeNodeIcon = () => {
-  return L.divIcon({
-    html: `<div style="
-      background: linear-gradient(45deg, #667eea, #764ba2);
-      width: 30px;
-      height: 30px;
-      border-radius: 4px;
-      border: 2px solid white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      color: white;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-    ">🏢</div>`,
-    className: 'edge-node-icon',
-    iconSize: [34, 34],
-    iconAnchor: [17, 17],
-  });
-};
-
-const createAlertIcon = (severity) => {
-  const colors = {
-    high: '#F44336',
-    medium: '#FF9800',
-    low: '#FFC107'
-  };
-
-  return L.divIcon({
-    html: `<div style="
-      background: ${colors[severity] || colors.medium};
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      border: 2px solid white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 12px;
-      color: white;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.3);
-      animation: pulse 2s infinite;
-    ">⚠️</div>
-    <style>
-      @keyframes pulse {
-        0% { transform: scale(1); opacity: 1; }
-        50% { transform: scale(1.2); opacity: 0.7; }
-        100% { transform: scale(1); opacity: 1; }
-      }
-    </style>`,
-    className: 'alert-icon',
-    iconSize: [28, 28],
-    iconAnchor: [14, 14],
-  });
-};
-
 function MapUpdater({ devices, edgeNodes, alerts, onDeviceClick }) {
   const map = useMap();
   const markersRef = useRef([]);
@@ -181,16 +100,16 @@ function MapUpdater({ devices, edgeNodes, alerts, onDeviceClick }) {
     });
     markersRef.current = [];
 
-    // Add device markers
+    // Add device markers with large, distinctive custom icons for each device type
     devices.forEach(device => {
       const marker = L.marker(
         [device.location.lat, device.location.lon],
-        { icon: createCustomIcon(device.type, device.status) }
+        { icon: createCustomDeviceIcon(device.type, device.status, 40) }
       );
 
       marker.bindPopup(`
         <div style="min-width: 200px;">
-          <h4 style="margin: 0 0 8px 0; color: #333;">${device.type}</h4>
+          <h4 style="margin: 0 0 8px 0; color: #333;">${deviceTypeInfo[device.type]?.name || device.type}</h4>
           <p style="margin: 2px 0;"><strong>ID:</strong> ${device.id}</p>
           <p style="margin: 2px 0;"><strong>Status:</strong> 
             <span style="color: ${device.status === 'online' ? '#4CAF50' : '#F44336'};">
@@ -219,11 +138,11 @@ function MapUpdater({ devices, edgeNodes, alerts, onDeviceClick }) {
       markersRef.current.push(marker);
     });
 
-    // Add edge node markers
+    // Add edge node markers with enhanced design
     edgeNodes.forEach(node => {
       const marker = L.marker(
         [node.location.lat, node.location.lon],
-        { icon: createEdgeNodeIcon() }
+        { icon: createEdgeNodeIcon(40) }
       );
 
       marker.bindPopup(`
@@ -244,12 +163,12 @@ function MapUpdater({ devices, edgeNodes, alerts, onDeviceClick }) {
       markersRef.current.push(marker);
     });
 
-    // Add alert markers
+    // Add alert markers with enhanced design
     alerts.forEach(alert => {
       if (alert.location) {
         const marker = L.marker(
           [alert.location.lat, alert.location.lon],
-          { icon: createAlertIcon(alert.severity) }
+          { icon: createAlertIcon(alert.severity, 32) }
         );
 
         marker.bindPopup(`
@@ -352,14 +271,14 @@ function CityMap({ devices = [], edgeNodes = [], emergencyAlerts = [], onDeviceC
 
       <Legend>
         <h4 style={{ margin: '0 0 8px 0', fontSize: '14px' }}>Device Types</h4>
-        <LegendItem color="#4CAF50">📹 CCTV Cameras</LegendItem>
-        <LegendItem color="#2196F3">🚦 Traffic Sensors</LegendItem>
-        <LegendItem color="#9C27B0">🗑️ Waste Bins</LegendItem>
-        <LegendItem color="#FFC107">💡 Smart Lights</LegendItem>
-        <LegendItem color="#795548">🌡️ Pollution Sensors</LegendItem>
-        <LegendItem color="#667eea">🏢 Edge Nodes</LegendItem>
+        {Object.entries(deviceTypeInfo).map(([type, info]) => (
+          <LegendItem key={type} color={info.color}>
+            {info.icon} {info.name}
+          </LegendItem>
+        ))}
+        <LegendItem color="#667eea">🏢 Edge Computing Nodes</LegendItem>
         {emergencyAlerts.length > 0 && (
-          <LegendItem color="#F44336">⚠️ Alerts ({emergencyAlerts.length})</LegendItem>
+          <LegendItem color="#F44336">⚠️ Active Alerts ({emergencyAlerts.length})</LegendItem>
         )}
       </Legend>
     </MapWrapper>

@@ -1,6 +1,30 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// Device type to emoji mapping for consistent icons
+const deviceTypeIcons = {
+  CCTV: '📹',
+  TrafficSensor: '🚦',
+  WasteBinSensor: '🗑️',
+  SmartStreetlight: '💡',
+  PollutionSensor: '🌡️',
+  WaterQualitySensor: '💧',
+  NoiseSensor: '🔊',
+  ParkingSensor: '🅿️',
+};
+
+// Device type to friendly name mapping
+const deviceTypeNames = {
+  CCTV: 'CCTV Camera',
+  TrafficSensor: 'Traffic Sensor',
+  WasteBinSensor: 'Waste Bin Sensor',
+  SmartStreetlight: 'Smart Street Light',
+  PollutionSensor: 'Pollution Sensor',
+  WaterQualitySensor: 'Water Quality Sensor',
+  NoiseSensor: 'Noise Sensor',
+  ParkingSensor: 'Parking Sensor',
+};
+
 const ModalOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -136,7 +160,9 @@ function DeviceDetailsModal({ device, onClose }) {
     <ModalOverlay onClick={handleOverlayClick}>
       <ModalContent>
         <ModalHeader>
-          <ModalTitle>{device.type} Details</ModalTitle>
+          <ModalTitle>
+            {deviceTypeIcons[device.type] || '📍'} {deviceTypeNames[device.type] || device.type}
+          </ModalTitle>
           <CloseButton onClick={onClose}>×</CloseButton>
         </ModalHeader>
         

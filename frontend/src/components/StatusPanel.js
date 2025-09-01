@@ -1,6 +1,18 @@
 import React from 'react';
 import styled from 'styled-components';
 
+// Device type icons for consistent display
+const deviceTypeIcons = {
+  CCTV: '📹',
+  TrafficSensor: '🚦',
+  WasteBinSensor: '🗑️',
+  SmartStreetlight: '💡',
+  PollutionSensor: '🌡️',
+  WaterQualitySensor: '💧',
+  NoiseSensor: '🔊',
+  ParkingSensor: '🅿️',
+};
+
 const PanelContainer = styled.div`
   padding: 20px;
   height: 100%;
@@ -162,16 +174,8 @@ const ControlButton = styled.button`
   }
 `;
 
-const deviceIcons = {
-  CCTV: '📹',
-  TrafficSensor: '🚦',
-  WasteBinSensor: '🗑️',
-  SmartStreetlight: '💡',
-  PollutionSensor: '🌡️',
-};
-
 function StatusPanel({ cityData = {}, simulationRunning = false, onToggleSimulation }) {
-  const { devices = [], edgeNodes = [], energyStats = {} } = cityData;
+  const { devices = [], edgeNodes = [] } = cityData;
   
   const deviceStats = devices.reduce((acc, device) => {
     acc.total++;
@@ -224,7 +228,7 @@ function StatusPanel({ cityData = {}, simulationRunning = false, onToggleSimulat
         
         {devices.slice(0, 10).map(device => (
           <DeviceItem key={device.id}>
-            <DeviceIcon>{deviceIcons[device.type] || '📱'}</DeviceIcon>
+            <DeviceIcon>{deviceTypeIcons[device.type] || '📱'}</DeviceIcon>
             <DeviceInfo>
               <DeviceName>{device.id}</DeviceName>
               <DeviceStatus status={device.status}>
