@@ -1,0 +1,38 @@
+{
+  "name": "smart-city-communication-hub",
+  "version": "1.0.0",
+  "description": "Secure & Sustainable Smart City Communication Hub - A comprehensive IoT simulation with edge computing and security",
+  "main": "index.js",
+  "scripts": {
+    "setup": "npm install --prefix backend && npm install --prefix frontend",
+    "dev": "concurrently \"npm run dev --prefix backend\" \"npm start --prefix frontend\"",
+    "start": "npm start --prefix backend",
+    "build": "npm run build --prefix frontend",
+    "test": "npm test --prefix backend && npm test --prefix frontend"
+  },
+  "keywords": [
+    "smart-city",
+    "iot",
+    "edge-computing",
+    "security",
+    "sustainability",
+    "hackathon",
+    "react",
+    "nodejs",
+    "socket.io",
+    "encryption"
+  ],
+  "author": "Smart City Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-username/smart_city_communication_hub.git"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
+  }
+}
