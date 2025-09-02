@@ -1,0 +1,29 @@
+{
+  "name": "mock-department-servers",
+  "version": "1.0.0",
+  "description": "Mock Department Websites for Smart City Communication Hub",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "police": "node police-server.js",
+    "cleaning": "node cleaning-server.js",
+    "environment": "node environment-server.js",
+    "municipal": "node municipal-server.js"
+  },
+  "keywords": [
+    "smart-city",
+    "mock-server",
+    "departments",
+    "webhook"
+  ],
+  "author": "Smart City Team",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "body-parser": "^1.20.2",
+    "moment": "^2.29.4",
+    "nodemon": "^3.0.1"
+  }
+}
