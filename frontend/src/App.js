@@ -13,6 +13,7 @@ import EnergyDashboard from './components/EnergyDashboard';
 import SecurityPanel from './components/SecurityPanel';
 import DeviceDetailsModal from './components/DeviceDetailsModal';
 import LoadingScreen from './components/LoadingScreen';
+import DepartmentDashboard from './components/DepartmentDashboard';
 
 import { SocketService } from './services/socketService';
 import { ApiService } from './services/apiService';
@@ -57,6 +58,7 @@ const RightPanel = styled.div`
 function App() {
   const [loading, setLoading] = useState(true);
   const [connected, setConnected] = useState(false);
+  const [currentView, setCurrentView] = useState('dashboard'); // 'dashboard' or 'departments'
   const [cityData, setCityData] = useState({
     devices: [],
     edgeNodes: [],
@@ -293,6 +295,44 @@ function App() {
     return <LoadingScreen />;
   }
 
+  // Show department dashboard if requested
+  if (currentView === 'departments') {
+    return (
+      <>
+        <DepartmentDashboard />
+        <button
+          onClick={() => setCurrentView('dashboard')}
+          style={{
+            position: 'fixed',
+            top: '20px',
+            right: '20px',
+            background: '#667eea',
+            color: 'white',
+            border: 'none',
+            padding: '10px 20px',
+            borderRadius: '8px',
+            cursor: 'pointer',
+            zIndex: 1000
+          }}
+        >
+          ← Back to Main Dashboard
+        </button>
+        <ToastContainer
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="dark"
+        />
+      </>
+    );
+  }
+
   return (
     <AppContainer>
       <Sidebar 
@@ -300,6 +340,7 @@ function App() {
         onPanelSelect={setSelectedPanel}
         connected={connected}
         simulationRunning={simulationRunning}
+        onViewDepartments={() => setCurrentView('departments')}
       />
       
       <MainContent>
@@ -309,6 +350,7 @@ function App() {
           deviceCount={cityData.devices.length}
           alertCount={cityData.emergencyAlerts.length}
           onToggleSimulation={toggleSimulation}
+          onViewDepartments={() => setCurrentView('departments')}
         />
         
         <ContentArea>

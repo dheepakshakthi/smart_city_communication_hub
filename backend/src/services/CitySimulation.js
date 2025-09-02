@@ -144,10 +144,11 @@ class ParkingSensor {
 }
 
 class CitySimulation {
-    constructor() {
+    constructor(departmentService = null) {
         this.devices = [];
         this.edgeNodes = [];
         this.securityService = new SecurityService();
+        this.departmentService = departmentService;
         this.isRunning = false;
         this.energyStats = {
             totalConsumption: 0,
@@ -155,6 +156,8 @@ class CitySimulation {
             co2Reduction: 0
         };
         this.emergencyAlerts = [];
+        this.lastDepartmentBroadcast = Date.now();
+        this.departmentBroadcastInterval = 300000; // 5 minutes
         this.setupCity();
     }
 
@@ -365,6 +368,32 @@ class CitySimulation {
 
         // Emit security status
         this.socketIO.emit('security_status', this.securityService.getSecurityStatus());
+        
+        // Broadcast to departments if enough time has passed
+        this.broadcastToDepartments();
+    }
+
+    async broadcastToDepartments() {
+        if (!this.departmentService) return;
+        
+        const now = Date.now();
+        if (now - this.lastDepartmentBroadcast >= this.departmentBroadcastInterval) {
+            try {
+                console.log('📡 Broadcasting data to department webhooks...');
+                const results = await this.departmentService.broadcastToAllDepartments(this.devices);
+                
+                // Emit department broadcast results to connected clients
+                this.socketIO.emit('department_broadcast', {
+                    timestamp: new Date(),
+                    results: results,
+                    deviceCount: this.devices.length
+                });
+                
+                this.lastDepartmentBroadcast = now;
+            } catch (error) {
+                console.error('Error broadcasting to departments:', error);
+            }
+        }
     }
 
     updateEnergyStats() {

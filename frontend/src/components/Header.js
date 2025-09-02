@@ -114,7 +114,8 @@ function Header({
   simulationRunning, 
   deviceCount = 0, 
   alertCount = 0, 
-  onToggleSimulation 
+  onToggleSimulation,
+  onViewDepartments 
 }) {
   return (
     <HeaderContainer>
@@ -150,6 +151,13 @@ function Header({
       </StatusBar>
       
       <Controls>
+        <ControlButton
+          className="secondary"
+          onClick={onViewDepartments}
+          style={{ marginRight: '10px' }}
+        >
+          🏢 Departments
+        </ControlButton>
         <ControlButton
           className={simulationRunning ? 'danger' : 'primary'}
           onClick={onToggleSimulation}

@@ -126,6 +126,27 @@ class ApiService {
     return response.data;
   }
 
+  // Department methods
+  async getDepartments() {
+    const response = await this.api.get('/api/departments');
+    return response.data;
+  }
+
+  async getDepartmentData(department) {
+    const response = await this.api.get(`/api/departments/${department}`);
+    return response.data;
+  }
+
+  async getDepartmentDevices(department) {
+    const response = await this.api.get(`/api/departments/${department}/devices`);
+    return response.data;
+  }
+
+  async getDepartmentAlerts(department) {
+    const response = await this.api.get(`/api/departments/${department}/alerts`);
+    return response.data;
+  }
+
   async clearAlert(alertId) {
     const response = await this.api.delete(`/api/city/alert/${alertId}`);
     return response.data;

@@ -5,7 +5,9 @@ const cors = require('cors');
 require('dotenv').config();
 
 const CitySimulation = require('./services/CitySimulation');
+const DepartmentService = require('./services/DepartmentService');
 const cityRoutes = require('./routes/cityRoutes');
+const departmentRoutes = require('./routes/departmentRoutes');
 
 const app = express();
 const server = http.createServer(app);
@@ -25,11 +27,13 @@ app.use(cors({
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Initialize city simulation
-const citySimulation = new CitySimulation();
+// Initialize services
+const departmentService = new DepartmentService();
+const citySimulation = new CitySimulation(departmentService);
 
 // Routes
 app.use('/api/city', cityRoutes(citySimulation));
+app.use('/api', departmentRoutes(citySimulation, departmentService));
 
 // Root route
 app.get('/', (req, res) => {
